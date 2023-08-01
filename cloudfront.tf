@@ -1,7 +1,7 @@
 resource "aws_cloudfront_distribution" "nuvolar" {
   origin {
-    domain_name = aws_instance.nuvolar.public_dns
-    origin_id   = aws_instance.nuvolar.public_dns
+    domain_name = aws_eip.nuvolar.public_dns
+    origin_id   = "nuvolar"
     custom_origin_config {
       http_port              = 8080
       https_port             = 8443
@@ -10,13 +10,12 @@ resource "aws_cloudfront_distribution" "nuvolar" {
     }
   }
 
-
   enabled = true
 
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = aws_instance.nuvolar.public_dns
+    target_origin_id = "nuvolar"
 
     forwarded_values {
       query_string = false
@@ -41,11 +40,12 @@ resource "aws_cloudfront_distribution" "nuvolar" {
   viewer_certificate {
     cloudfront_default_certificate = true
   }
+
   depends_on = [
-    aws_instance.nuvolar
+    aws_eip.nuvolar
   ]
 }
 
 output "nuvolar-web" {
-  value = "curl https://${aws_cloudfront_distribution.nuvolar.domain_name}"
+  value = "curl https://${aws_cloudfront_distribution.nuvolar.domain_name}/order"
 }
