@@ -42,8 +42,10 @@ resource "tls_private_key" "nuvolar" {
 }
 
 resource "local_sensitive_file" "nuvolar-key" {
-  content  = tls_private_key.nuvolar.private_key_pem
-  filename = "cloud-keys/nuvolar.pem"
+  content              = tls_private_key.nuvolar.private_key_pem
+  filename             = "cloud-keys/nuvolar.pem"
+  directory_permission = "0755"
+  file_permission      = "0644"
 }
 
 output "nuvolar-ssh" {
